@@ -1,0 +1,19 @@
+version: "3.4"
+
+services:
+  app:
+    build:
+      context: .
+      target: production
+    ports:
+      - 8080:8080
+    command: node --use_strict index.js
+  test:
+    build:
+      context: .
+      target: test
+    depends_on:
+      - app
+    command: npm test
+    volumes:
+      - ./:/app
