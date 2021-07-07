@@ -21,10 +21,33 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: OK
+                $ref: "#/components/schemas/healthCheckResponse"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+  /price-drop-check:
+    post:
+      description: endpoint to post updated prices for particular product
+      operationId: priceDropCheck
+      x-eov-operation-id: priceDropCheck
+      x-eov-operation-handler: price-drop-check
+      requestBody:
+        description: price drop check request schema
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/priceDropCheckRequestBody"
+      responses:
+        "200":
+          description: "Response indicating whether a price drop alert is required"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/priceDropCheckResponse"
         "401":
           $ref: "#/components/responses/401"
         "404":
@@ -58,6 +81,49 @@ components:
           schema:
             $ref: "#/components/schemas/InvalidRequestError"
   schemas:
+    priceDropCheckResponse:
+      description: Response indicating whether a price drop alert is required
+      type: object
+      properties:
+        alertRequired:
+          type: boolean
+        newPrice:
+          type: number
+        productId:
+          type: string
+        retailerId:
+          type: string
+      additionalProperties: false
+    priceDropCheckRequestBody:
+      description: Request body to check whether a price drop alert is required
+      type: object
+      required:
+        - productId
+        - retailers
+      properties:
+        productId:
+          type: string
+          example: "ABC123"
+        retailers:
+          type: array
+          items:
+            type: object
+            properties:
+              retailerId:
+                type: string
+                example: "nike"
+              retailPrice:
+                type: number
+                example: 100
+              isInStock:
+                type: boolean
+              discountedPrice:
+                type: number
+                example: 90
+            required:
+              - retailerId
+              - retailPrice
+              - isInStock
     healthCheckResponse:
       description: healthcheck OK response
       type: object

@@ -1,11 +1,11 @@
 const logger = require('pino')();
 const init = require('./src');
 
-const { name, port } = require('./src/config');
+const { name, PORT } = require('./src/config');
 
 (async () => {
   const app = await init();
-  app.listen(port, () => {
-    logger.info({ msg: `${name} is listening on port ${port}` });
+  app.listen(PORT, () => {
+    logger.info({ msg: `${name} is listening on port ${PORT}` });
   });
 })();

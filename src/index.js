@@ -3,6 +3,8 @@ const cors = require('cors');
 const path = require('path');
 const OpenApiValidator = require('express-openapi-validator');
 
+const database = require('./lib/db');
+
 const app = express();
 
 app.use(express.json({ limit: '1kb' }));
@@ -15,6 +17,8 @@ app.use('/swagger', express.static(apiSpec));
 app.use(express.urlencoded({ extended: false }));
 
 async function init() {
+  await database.connect();
+  
   app.use(
     OpenApiValidator.middleware({
       apiSpec,

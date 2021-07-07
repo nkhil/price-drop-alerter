@@ -5,15 +5,26 @@ services:
     build:
       context: .
       target: production
+    depends_on:
+      - mongo
     ports:
       - 8080:8080
     command: node --use_strict index.js
+    environment:
+      MONGO_CONNECTION_STRING: mongodb://mongo/prices?retryWrites=true&w=majority
   test:
     build:
       context: .
       target: test
     depends_on:
+      - mongo
       - app
     command: npm test
+    environment:
+      MONGO_CONNECTION_STRING: mongodb://mongo/prices?retryWrites=true&w=majority
     volumes:
       - ./:/app
+  mongo:
+    image: mongo:4
+    expose:
+      - 27017
