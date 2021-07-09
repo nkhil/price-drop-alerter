@@ -33,10 +33,8 @@ function createPriceDropResult(alertRequired, newLowestPrice, productId) {
   }
 }
 
-function handleUpsertingLowestPrice(upsertNeeded, currentLowestPrice, previousLowestPrice, productId) {
-  if (upsertNeeded || !Object.keys(previousLowestPrice).length) {
-    return database.upsertLowestPrice(productId, { productId, ...currentLowestPrice });
-  }
+function handleUpsertingLowestPrice(currentLowestPrice, productId) {
+  return database.upsertLowestPrice(productId, { productId, ...currentLowestPrice });
 }
 
 async function priceDropCheck(req, res) {
@@ -54,7 +52,7 @@ async function priceDropCheck(req, res) {
 
     res.status(200).json(response);
 
-    return await handleUpsertingLowestPrice(priceDropAlertNeeded, retailerWithLowestPrice, previousLowestPrice, productId);
+    return await handleUpsertingLowestPrice(retailerWithLowestPrice, productId);
   } catch (error) {
     const stringifiedError = JSON.stringify(error);
     if (error instanceof DatabaseError) {
