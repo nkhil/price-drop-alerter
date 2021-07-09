@@ -1,9 +1,8 @@
 const supertest = require('supertest');
+
 const init = require('../../src');
 const { name } = require('../../package.json');
 const LowestPriceModel = require('../../src/lib/db/model/lowest-price');
-
-jest.setTimeout(30000);
 
 describe(`${name} API test`, () => {
   let request;
@@ -71,10 +70,6 @@ describe(`${name} API test`, () => {
         retailerId: 'retailer-01'
       });
     });
-
-    it('handles a case where none of the items are in stock', async () => {
-      // TODO: 
-    })
 
     it('returns a 401 status code when productId is missing in payload', async () => {
       const res = await request.post('/price-drop-check')
