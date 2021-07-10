@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 
 async function init() {
   await database.connect();
-  
+
   app.use(
     OpenApiValidator.middleware({
       apiSpec,
@@ -27,7 +27,7 @@ async function init() {
       validateSecurity: {
         handlers: {},
       },
-    }),
+    })
   );
 
   app.use((err, req, res) => {

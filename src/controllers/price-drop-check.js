@@ -11,12 +11,12 @@ function calculateLowestPrice({ retailPrice, discountPrice }) {
 }
 
 function checkIfPriceHasFallenBelowThreshold(lowestPricedRetailer, previousLowestPrice, priceDropThreshold) {
-  const currentLowest = calculateLowestPrice(lowestPricedRetailer)
-  const previousLowest = calculateLowestPrice(previousLowestPrice)
-  if ((previousLowest - currentLowest) > priceDropThreshold) {
-    return true
+  const currentLowest = calculateLowestPrice(lowestPricedRetailer);
+  const previousLowest = calculateLowestPrice(previousLowestPrice);
+  if (previousLowest - currentLowest > priceDropThreshold) {
+    return true;
   }
-  return false
+  return false;
 }
 
 function createPriceDropResult(alertRequired, newLowestPrice, productId) {
@@ -26,28 +26,34 @@ function createPriceDropResult(alertRequired, newLowestPrice, productId) {
       newPrice: calculateLowestPrice(newLowestPrice),
       productId,
       retailerId: newLowestPrice.retailerId,
-    }
+    };
   }
   return {
     alertRequired: false,
-  }
+  };
 }
 
 function handleUpsertingLowestPrice(currentLowestPrice, productId) {
-  return database.upsertLowestPrice(productId, { productId, ...currentLowestPrice });
+  return database.upsertLowestPrice(productId, {
+    productId,
+    ...currentLowestPrice,
+  });
 }
 
 async function priceDropCheck(req, res) {
   try {
     const { productId, retailers } = req.body;
-    logger.info({ msg: `Processing price drop check for productId: ${productId}` });
+    logger.info({
+      msg: `Processing price drop check for productId: ${productId}`,
+    });
     const retailersWithStock = retailers.filter(r => r.isInStock);
-    const retailerWithLowestPrice = retailersWithStock.reduce((prev, curr) => {
-      return calculateLowestPrice(prev) < calculateLowestPrice(curr) ? prev : curr
-    }, {});
+    const retailerWithLowestPrice = retailersWithStock.reduce(
+      (prev, curr) => (calculateLowestPrice(prev) < calculateLowestPrice(curr) ? prev : curr),
+      {}
+    );
     const previousLowestPrice = await database.getLowestPriceForProductId(productId);
-    const priceDropAlertNeeded = checkIfPriceHasFallenBelowThreshold(retailerWithLowestPrice, previousLowestPrice, PRICE_DROP_THRESHOLD)
-    const response = createPriceDropResult(priceDropAlertNeeded, retailerWithLowestPrice, productId)
+    const priceDropAlertNeeded = checkIfPriceHasFallenBelowThreshold(retailerWithLowestPrice, previousLowestPrice, PRICE_DROP_THRESHOLD);
+    const response = createPriceDropResult(priceDropAlertNeeded, retailerWithLowestPrice, productId);
     logger.info({ msg: `Finished processing price drop check for ${productId} with result: ${JSON.stringify(response)}` });
 
     res.status(200).json(response);
@@ -58,12 +64,12 @@ async function priceDropCheck(req, res) {
     if (error instanceof DatabaseError) {
       logger.error({ msg: `Database error occured. Error: ${stringifiedError}` });
       return res.status(error.code).json(error.message);
-    } 
+    }
     logger.error({ msg: `Unknown error occured. Error: ${stringifiedError}` });
-    res.status(500).json(`An unknown error occured. Error: ${stringifiedError}`);
+    return res.status(500).json(`An unknown error occured. Error: ${stringifiedError}`);
   }
 }
 
 module.exports = {
   priceDropCheck,
-}
+};

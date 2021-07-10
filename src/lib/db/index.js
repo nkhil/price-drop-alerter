@@ -1,7 +1,9 @@
 const logger = require('pino')();
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-const { mongo: { CONNECTION_STRING } } = require('../../config');
+const {
+  mongo: { CONNECTION_STRING },
+} = require('../../config');
 
 mongoose.set('useCreateIndex', true);
 

@@ -8,6 +8,6 @@ module.exports = {
   mongo: {
     LOWEST_PRICE_MODEL: 'LowestPrice',
     LOWEST_PRICE_COLLECTION: 'lowestPrices',
-    CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING
-  }
+    CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING,
+  },
 };

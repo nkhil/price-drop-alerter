@@ -26,4 +26,4 @@ async function upsertLowestPrice(productId, retailerInfo) {
 module.exports = {
   getLowestPriceForProductId,
   upsertLowestPrice,
-}
+};

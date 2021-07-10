@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 
-const { mongo: { LOWEST_PRICE_COLLECTION, LOWEST_PRICE_MODEL } } = require('../../../config')
+const {
+  mongo: { LOWEST_PRICE_COLLECTION, LOWEST_PRICE_MODEL },
+} = require('../../../config');
 
 const lowestPriceSchema = new mongoose.Schema({
   productId: { type: String, required: true, unique: true },
@@ -10,8 +12,4 @@ const lowestPriceSchema = new mongoose.Schema({
   discountPrice: { type: Number, required: false },
 });
 
-module.exports = mongoose.model(
-  LOWEST_PRICE_MODEL,
-  lowestPriceSchema,
-  LOWEST_PRICE_COLLECTION,
-);
+module.exports = mongoose.model(LOWEST_PRICE_MODEL, lowestPriceSchema, LOWEST_PRICE_COLLECTION);
