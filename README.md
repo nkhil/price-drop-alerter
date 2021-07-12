@@ -145,4 +145,23 @@ I've extended Node's Error class to create custom errors that can be thrown (and
 ## Logging
 
 I've used pino as its a low overhead logger to log when requests are received and they finish processing to help debug issues in production.
+## Conventional commits
+
+This service uses conventional commits to be able to automatically create documentation / changelogs.
+
+## Deployment 
+
+Requirements for the operations of this service are: 
+
+> The API will be expected to handle a large number of requests coming from other micro-services hosted within AWS. The volume of this traffic will fluctuate heavily throughout the day.
+
+Firstly, I'd recommend a comprehensive CI/CD pipeline (eg: Github actions) be added to ensure changes made can be integrated and deployed regularly.
+
+As the API gets a highly variable number of requests, it's important that we're able to scale the service up and down based on the number of requests.
+
+I'd recomment the services use Helm along with Amazon EKS (AWS's managed kubernetes service) with a service mesh (eg: Istio) in the clusters. Kubernetes will allow us to declaratively set a threshold, as well as a minimum, maximum and threshold for the service.
+
+For eg: Initially, price-drop-alerter can be deployed with a minimum of 3 pods / instances. We can defer to EKS to load balance and distribute the incoming requests between the pods. We can now set a CPU usage threshold (for instance, 70%) that will auto-scale the services, with maximum pods configured (for eg: initially this can be set to 5 pods). This will ensure that we can scale horizontally, and be able to scale down during less-busy periods. 
+
+Note: Before being deployed to prod, we will need to load test the service (for eg: using Locust) to ensure that our k8s config (min 3 pods / max 5 pods) is capable of handling the number of requests we're expecting.
 
