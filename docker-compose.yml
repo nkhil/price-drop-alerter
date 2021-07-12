@@ -12,6 +12,7 @@ services:
     command: node --use_strict index.js
     environment:
       MONGO_CONNECTION_STRING: mongodb://mongo/prices?retryWrites=true&w=majority
+      PRICE_DROP_THRESHOLD: 10
   test:
     build:
       context: .
@@ -22,6 +23,7 @@ services:
     command: npm test
     environment:
       MONGO_CONNECTION_STRING: mongodb://mongo/prices?retryWrites=true&w=majority
+      PRICE_DROP_THRESHOLD: 10
     volumes:
       - ./:/app
   mongo:

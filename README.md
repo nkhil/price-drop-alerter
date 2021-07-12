@@ -25,7 +25,7 @@ To achieve this, every time the service gets a valid request that contains retai
 
 - Calculates the lowest price for that productId (taking retailPrice as well as discountPrice)
 - Gets the previous lowest price for that productId
-- Checks if the latest lowest price for that productId is lower than the previous lowest price by at least £10 (NOTE: this threshold is configurable in `./src/config.js` but can also be extended to become an environment variable to offer greater flexibility)
+- Checks if the latest lowest price for that productId is lower than the previous lowest price by at least £10 (NOTE: this threshold is an environment variable that can be modified without making changes to the service)
 - Once it finds if the latest lowest price is lower than the previous, it generates a payload to indicate whether an alert is required
 - Upserts the latest lowest price in the database 
 

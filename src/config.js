@@ -4,7 +4,7 @@ require('dotenv').config();
 module.exports = {
   name,
   PORT: process.env.PORT || 8080,
-  PRICE_DROP_THRESHOLD: 10,
+  PRICE_DROP_THRESHOLD: process.env.PRICE_DROP_THRESHOLD,
   mongo: {
     LOWEST_PRICE_MODEL: 'LowestPrice',
     LOWEST_PRICE_COLLECTION: 'lowestPrices',
