@@ -23,13 +23,18 @@ lowest price: 90  **PRICE DROP ALERT**
 
 To achieve this, every time the service gets a valid request that contains retailers, it:
 
-- Calculates the lowest price for that productId (taking retailPrice as well as discountPrice)
+- Calculates the lowest price for that productId (taking retailPrice as well as discountPrice into account)
 - Gets the previous lowest price for that productId
 - Checks if the latest lowest price for that productId is lower than the previous lowest price by at least £10 (NOTE: this threshold is an environment variable that can be modified without making changes to the service)
 - Once it finds if the latest lowest price is lower than the previous, it generates a payload to indicate whether an alert is required
 - Upserts the latest lowest price in the database 
 
 Note: As this service is only responsible for the lowest price for a given productId, it only ever stores (and upserts) a single record for a given productId. I decided to use this approach over storing historic prices for a given service following the single responsibility principle. 
+
+This approach:
+
+- Avoids a scenario where an 'older' record for the lowest price is read
+- Avoids concurrency issues: MongoDB uses a process wide write lock, so only one write operation can be performed at a time, ensuring we don't run into concurrency issues while multiple instances are trying to update the same record. The service can use the custom DatabaseError object catch and retry updating a record _n_ number of times in case an update request fails due to a write lock.
 
 ## Setup
 
@@ -42,7 +47,7 @@ npm run app:docker
 ```
 The application will run on the client's localhost port 8080 (http://localhost:8080)
 
-**To get the app running locally:**
+**To get the app running locally (without Docker):**
 
 ```
 git clone git@github.com:nkhil/price-drop-alerter.git
@@ -50,7 +55,7 @@ cd price-drop-alerter
 npm install
 npm run develop
 ```
-**NOTE**: You will node version 14.0.0 or above (at least) to get the service running locally as the service likely uses features only available in Node 14 and up (for eg: optional chaining).
+**NOTE**: This requires node V14.0.0 or above as the service likely uses features only available in Node 14 and up (for eg: optional chaining).
 
 ## Technologies / Frameworks used
 
